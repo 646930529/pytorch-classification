@@ -60,8 +60,8 @@ optimizer = optim.SGD(net.parameters(), lr=LR, momentum=0.9, weight_decay=5e-4)
 # 训练
 if __name__ == "__main__":
     best_acc = 85  #2 初始化best test accuracy
-    with open("acc.txt", "w") as f:
-        with open("log.txt", "w")as f2:
+    with open("acc.txt", "a+") as f:
+        with open("log.txt", "a+")as f2:
             for epoch in range(pre_epoch, EPOCH):
                 print('\nEpoch: %d' % (epoch + 1))
                 net.train()
@@ -117,7 +117,7 @@ if __name__ == "__main__":
                     f.flush()
                     # 记录最佳测试分类准确率并写入best_acc.txt文件中
                     if acc > best_acc:
-                        f3 = open("best_acc.txt", "w")
+                        f3 = open("best_acc.txt", "a+")
                         f3.write("EPOCH=%d,best_acc= %.3f%%" % (epoch + 1, acc))
                         f3.close()
                         best_acc = acc

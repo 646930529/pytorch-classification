@@ -202,7 +202,23 @@ class ResNet(nn.Module):
         return self._forward_impl(x)
 
 
-def ResNet18():
-
+def resnet18():
     return ResNet(BasicBlock, [2, 2, 2, 2])
+
+
+def resnet34():
+    return ResNet(BasicBlock, [3, 4, 6, 3])
+
+
+def resnet50():
+    return ResNet(Bottleneck, [3, 4, 6, 3])
+
+
+def resnet101():
+    return ResNet(Bottleneck, [3, 4, 23, 3])
+
+
+def resnet152():
+    return ResNet(Bottleneck, [3, 8, 36, 3])
+
 

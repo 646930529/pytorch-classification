@@ -23,7 +23,7 @@ import glob
 
 net = cv2.dnn.readNet('torch.onnx')
 print(net)
-dummy_input = np.zeros((1, 3, 32, 32))
+dummy_input = np.zeros((1, 3, 112, 112))
 net.setInput(dummy_input)
 preds = net.forward()
 print(preds)
@@ -43,7 +43,7 @@ def testfile():
         npdata = img[:,:,::-1]
         
         blob = npdata.astype(np.float32) / 255
-        blob = cv2.dnn.blobFromImage(blob, 1, (32,32), (0.5, 0.5, 0.5)) / 0.5
+        blob = cv2.dnn.blobFromImage(blob, 1, (112,112), (0.5, 0.5, 0.5)) / 0.5
 
         net.setInput(blob)
         preds = net.forward()
@@ -70,7 +70,7 @@ def testcap():
         npdata = img[:,:,::-1]
         
         blob = npdata.astype(np.float32) / 255
-        blob = cv2.dnn.blobFromImage(blob, 1, (32,32), (0.5, 0.5, 0.5)) / 0.5
+        blob = cv2.dnn.blobFromImage(blob, 1, (112,112), (0.5, 0.5, 0.5)) / 0.5
 
         net.setInput(blob)
         preds = net.forward()
@@ -79,6 +79,11 @@ def testcap():
             v = 2
         print(v,preds)
         
+        img = blob[0].transpose(1,2,0)
+        img = img / 2 + 0.5
+        img = img[:,:,::-1]
+        cv2.imshow('2',img)
+        cv2.waitKey(1)
         
 testcap()
 

@@ -4,7 +4,7 @@ import torch.optim as optim
 import torchvision
 import torchvision.transforms as transforms
 import argparse
-from resnet_vision import ResNet18
+from resnet_vision import resnet50 as resnet
 
 
 #device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -17,12 +17,12 @@ BATCH_SIZE = 32
 LR = 0.001
 
 
-net = ResNet18().to(device)
+net = resnet().to(device)
 #net.load_state_dict(torch.load('./model/net_015.pth'))
 
 transform_train = transforms.Compose([
-    transforms.Resize(40),
-    transforms.CenterCrop(32),
+    transforms.Resize(144),
+    transforms.CenterCrop(112),
     transforms.RandomHorizontalFlip(),
     transforms.ToTensor(),
     transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5)),

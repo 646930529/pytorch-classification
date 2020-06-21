@@ -6,7 +6,7 @@ import torchvision.transforms as transforms
 import torch.nn as nn
 import torch.nn.functional as F
 
-from resnet import ResNet18
+from resnet_vision import ResNet18
 import torch.onnx
 from torch.autograd import Variable
 
@@ -14,7 +14,7 @@ from torch.autograd import Variable
 device = torch.device("cpu")
 
 net = ResNet18().to(device)
-net.load_state_dict(torch.load('./model/net_012.pth'))
+net.load_state_dict(torch.load('./model/net_001.pth'))
 net.eval()
 
 with torch.no_grad():

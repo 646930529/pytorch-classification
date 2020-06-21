@@ -21,9 +21,10 @@ net = resnet().to(device)
 #net.load_state_dict(torch.load('./model/net_015.pth'))
 
 transform_train = transforms.Compose([
-    transforms.Resize(144),
-    transforms.CenterCrop(112),
+    transforms.Resize([112,112]),
+    #transforms.CenterCrop(112),
     transforms.RandomHorizontalFlip(),
+    transforms.RandomVerticalFlip(),
     transforms.ToTensor(),
     transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5)),
 ])

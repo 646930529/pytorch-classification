@@ -13,7 +13,7 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 EPOCH = 128
 pre_epoch = 0
-BATCH_SIZE = 128
+BATCH_SIZE = 64
 LR = 0.001
 
 
@@ -21,12 +21,12 @@ net = resnet().to(device)
 #net.load_state_dict(torch.load('./model/net_015.pth'))
 
 transform_train = transforms.Compose([
-    transforms.Resize([120,120]),
-    transforms.CenterCrop(112),
+    transforms.Resize([226,226]),
+    transforms.CenterCrop(224),
     transforms.RandomHorizontalFlip(),
     transforms.RandomVerticalFlip(),
-    #transforms.RandomRotation([5,35]),
-    #transforms.ColorJitter(brightness=0.1, contrast=0.1, saturation=0.1, hue=0.1),
+    transforms.RandomRotation([0,25]),
+    transforms.ColorJitter(brightness=0.1, contrast=0.1, saturation=0.1, hue=0.1),
     transforms.ToTensor(),
     transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5)),
 ])
@@ -38,20 +38,20 @@ trainloader = torch.utils.data.DataLoader(trainset, batch_size=BATCH_SIZE, shuff
 
 classes = trainset.classes
 print(trainset.classes)
-
 print(len(trainset))
 print(trainset[0][0].shape)
 print(trainset[0][0].max())
 print(trainset[0][0].min())
 
-#vindex = 0
-#for img in trainset:
-#    vindex += 1
-#    print(vindex, img[1], img[0].shape)
+
+#for i in range(len(trainset)):
+#    print('         ', trainset[i][0].shape, trainset.imgs[i])
+#import sys
+#sys.exit()
+
 
 criterion = nn.CrossEntropyLoss()
 optimizer = optim.SGD(net.parameters(), lr=LR, momentum=0.9, weight_decay=5e-4)
-
 
 
 with open("log.txt", "a+")as f2:

@@ -14,11 +14,11 @@ from torch.autograd import Variable
 device = torch.device("cpu")
 
 net = resnet().to(device)
-#net.load_state_dict(torch.load('./model/net_013.pth'))
+net.load_state_dict(torch.load('./model/net_119.pth'))
 net.eval()
 
 with torch.no_grad():
-    dummy_input = Variable(torch.zeros(1, 3, 112, 112))
+    dummy_input = Variable(torch.zeros(1, 3, 224, 224))
     print(net(dummy_input).numpy())
     torch.onnx.export(net, dummy_input, "torch.onnx")
 

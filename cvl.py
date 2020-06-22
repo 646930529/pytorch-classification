@@ -6,7 +6,6 @@ import torchvision.transforms as transforms
 import torch.nn as nn
 import torch.nn.functional as F
 
-from resnet import ResNet18
 import torch.onnx
 from torch.autograd import Variable
 
@@ -23,7 +22,7 @@ import glob
 
 net = cv2.dnn.readNet('torch.onnx')
 print(net)
-dummy_input = np.zeros((1, 3, 112, 112))
+dummy_input = np.zeros((1, 3, 224, 224))
 net.setInput(dummy_input)
 preds = net.forward()
 print(preds)
@@ -43,7 +42,7 @@ def testfile():
         npdata = img[:,:,::-1]
         
         blob = npdata.astype(np.float32) / 255
-        blob = cv2.dnn.blobFromImage(blob, 1, (112,112), (0.5, 0.5, 0.5)) / 0.5
+        blob = cv2.dnn.blobFromImage(blob, 1, (224, 224), (0.5, 0.5, 0.5)) / 0.5
 
         net.setInput(blob)
         preds = net.forward()
@@ -70,13 +69,11 @@ def testcap():
         npdata = img[:,:,::-1]
         
         blob = npdata.astype(np.float32) / 255
-        blob = cv2.dnn.blobFromImage(blob, 1, (112,112), (0.5, 0.5, 0.5)) / 0.5
+        blob = cv2.dnn.blobFromImage(blob, 1, (224, 224), (0.5, 0.5, 0.5)) / 0.5
 
         net.setInput(blob)
         preds = net.forward()
         v = np.argmax(preds)
-        if preds.max() < 1:
-            v = 2
         print(v,preds)
         
         img = blob[0].transpose(1,2,0)

@@ -7,13 +7,13 @@ import argparse
 from resnet_vision import resnet50 as resnet
 
 
-#device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-device = torch.device("cpu")
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+#device = torch.device("cpu")
 
 
 EPOCH = 128
 pre_epoch = 0
-BATCH_SIZE = 32
+BATCH_SIZE = 128
 LR = 0.001
 
 
@@ -21,10 +21,12 @@ net = resnet().to(device)
 #net.load_state_dict(torch.load('./model/net_015.pth'))
 
 transform_train = transforms.Compose([
-    transforms.Resize([112,112]),
-    #transforms.CenterCrop(112),
+    transforms.Resize([120,120]),
+    transforms.CenterCrop(112),
     transforms.RandomHorizontalFlip(),
     transforms.RandomVerticalFlip(),
+    #transforms.RandomRotation([5,35]),
+    #transforms.ColorJitter(brightness=0.1, contrast=0.1, saturation=0.1, hue=0.1),
     transforms.ToTensor(),
     transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5)),
 ])

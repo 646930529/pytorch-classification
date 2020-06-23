@@ -3,35 +3,36 @@ import torch.nn as nn
 import torch.optim as optim
 import torchvision
 import torchvision.transforms as transforms
+import torchvision.models as models
 import argparse
-from resnet_vision import resnet50 as resnet
 
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 #device = torch.device("cpu")
 
 
-EPOCH = 128
+EPOCH = 256
 pre_epoch = 0
 BATCH_SIZE = 64
 LR = 0.001
 
 
-net = resnet().to(device)
+net = models.resnet152(num_classes=4).to(device)
 #net.load_state_dict(torch.load('./model/net_015.pth'))
 
+
 transform_train = transforms.Compose([
-    transforms.Resize([226,226]),
+    transforms.Resize([256, 256]),
     transforms.CenterCrop(224),
     transforms.RandomHorizontalFlip(),
     transforms.RandomVerticalFlip(),
-    transforms.RandomRotation([0,25]),
+    transforms.RandomRotation([0, 25]),
     transforms.ColorJitter(brightness=0.1, contrast=0.1, saturation=0.1, hue=0.1),
     transforms.ToTensor(),
     transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5)),
 ])
 
-#trainset = torchvision.datasets.CIFAR10(root='./data', train=True, download=False, transform=transform_train)
+
 trainset = torchvision.datasets.ImageFolder(root='./data', transform=transform_train)
 trainloader = torch.utils.data.DataLoader(trainset, batch_size=BATCH_SIZE, shuffle=True, num_workers=2)
 
@@ -45,13 +46,13 @@ print(trainset[0][0].min())
 
 
 #for i in range(len(trainset)):
-#    print('         ', trainset[i][0].shape, trainset.imgs[i])
+#    print('         ', i, trainset[i][0].shape, trainset.imgs[i])
 #import sys
 #sys.exit()
 
 
 criterion = nn.CrossEntropyLoss()
-optimizer = optim.SGD(net.parameters(), lr=LR, momentum=0.9, weight_decay=5e-4)
+optimizer = optim.SGD(net.parameters(), lr=LR, momentum=0.9, weight_decay=1e-4)
 
 
 with open("log.txt", "a+")as f2:
@@ -65,14 +66,17 @@ with open("log.txt", "a+")as f2:
             length = len(trainloader)
             inputs, labels = data
             inputs, labels = inputs.to(device), labels.to(device)
+
+            # zero the parameter gradients
             optimizer.zero_grad()
 
-            # forward + backward
+            # forward + backward + optimize
             outputs = net(inputs)
             loss = criterion(outputs, labels)
             loss.backward()
             optimizer.step()
 
+            # print statistics
             sum_loss += loss.item()
             _, predicted = torch.max(outputs.data, 1)
             total += labels.size(0)

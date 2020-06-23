@@ -6,10 +6,10 @@ import time
 import sys
 
 
-savedir = 'baowen'
-word = '保温杯'
+savedir = 'test'
+word = '玻璃水杯'
 url = 'http://image.baidu.com/search/flip?tn=baiduimage&ie=utf-8&word=' + word + '&pn='
-maxdown = 400
+maxdown = 50
 pagesize = 60
 
 

@@ -17,7 +17,9 @@ import torch
 import torchvision
 import torchvision.transforms as transforms
 import glob
-
+import time
+import shutil
+import os
 
 
 net = cv2.dnn.readNet('torch.onnx')
@@ -28,31 +30,62 @@ preds = net.forward()
 print(preds)
 
 
+def removepath(path):
+    if os.path.exists(path):
+        shutil.rmtree(path)
+    os.mkdir(path)
+
+
+def cv_imread(filePath):
+    cv_img=cv2.imdecode(np.fromfile(filePath,dtype=np.uint8),-1)
+    #cv_img=cv2.cvtColor(cv_img,cv2.COLOR_RGB2BGR)
+    if cv_img is None:
+        return None
+    print('cv_imread', cv_img.shape)
+    if len(cv_img.shape) == 2:
+        cv_img = cv2.cvtColor(cv_img,cv2.COLOR_GRAY2RGB)
+    if len(cv_img.shape) == 3 and cv_img.shape[2] == 4:
+        cv_img = cv2.cvtColor(cv_img,cv2.COLOR_BGRA2RGB)
+    return cv_img
+
 
 def testfile():
-    ccc = {0:0, 1:0}
+    removepath('test1')
+    removepath('test2')
+    removepath('test3')
+    removepath('test4')
+
+    ccc = {0:0, 1:0, 2:0, 3:0}
     ci = 0
-    for img in glob.glob('data/cup/*.jpg'):
-        img = cv2.imread(img)
+    for img in glob.glob('test/*.jpg'):
+        print(ci,img)
+        img = cv_imread(img)
         if img is None:
             continue
-        cv2.imshow('1',img)
+        img = cv2.resize(img, (224, 224), interpolation=cv2.INTER_AREA)
+        cv2.imshow('1', img)
         cv2.waitKey(1)
 
         npdata = img[:,:,::-1]
+        print(npdata.shape, npdata.mean(), npdata.max(), npdata.min())
         
         blob = npdata.astype(np.float32) / 255
         blob = cv2.dnn.blobFromImage(blob, 1, (224, 224), (0.5, 0.5, 0.5)) / 0.5
 
+        print(blob.shape)
         net.setInput(blob)
         preds = net.forward()
         v = np.argmax(preds)
-        print(v,preds)
+        print(ci,v,preds)
         ccc[v] += 1
-        print(ci)
         ci += 1
-        if ci > 100:
-            break
+        cv2.imwrite('test'+str(v+1)+'/'+str(time.time())+'.jpg', img)
+        
+        img = blob[0].transpose(1,2,0)
+        img = img / 2 + 0.5
+        img = img[:,:,::-1]
+        cv2.imshow('2',img)
+        cv2.waitKey(1)
     print(ccc)
 
 
@@ -62,7 +95,7 @@ def testcap():
         _, img = cap.read()
         if img is None:
             continue
-        img = img[100:300,100:300]
+        img = img[100:324,100:324]
         cv2.imshow('1',img)
         cv2.waitKey(1)
 
@@ -81,6 +114,7 @@ def testcap():
         img = img[:,:,::-1]
         cv2.imshow('2',img)
         cv2.waitKey(1)
-        
+
+#testfile()
 testcap()
 

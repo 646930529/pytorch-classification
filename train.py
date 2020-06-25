@@ -11,23 +11,23 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 #device = torch.device("cpu")
 
 
-EPOCH = 256
+EPOCH = 400
 pre_epoch = 0
 BATCH_SIZE = 32
 LR = 0.001
 
 
-net = models.resnet152(num_classes=4).to(device)
-#net.load_state_dict(torch.load('./model/net_015.pth'))
+net = models.resnet152(num_classes=2).to(device)
+#net.load_state_dict(torch.load('./model/net_256.pth'))
 
 
 transform_train = transforms.Compose([
-    transforms.Resize([256, 256]),
+    transforms.Resize([244, 244]),
     transforms.RandomCrop(224),
     transforms.RandomHorizontalFlip(),
     transforms.RandomVerticalFlip(),
-    transforms.RandomRotation([0, 25]),
-    transforms.ColorJitter(brightness=0.25, contrast=0.25, saturation=0.5, hue=[-0.25, 0.25]),
+    #transforms.RandomRotation([0, 25]),
+    transforms.ColorJitter(brightness=0.15, contrast=0.15, saturation=0.15, hue=[-0.15, 0.15]),
     transforms.ToTensor(),
     transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5)),
 ])

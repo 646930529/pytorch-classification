@@ -31,9 +31,12 @@ print(preds)
 
 
 def removepath(path):
+    time.sleep(0.1)
     if os.path.exists(path):
         shutil.rmtree(path)
+    time.sleep(0.1)
     os.mkdir(path)
+    time.sleep(0.1)
 
 
 def cv_imread(filePath):
@@ -41,7 +44,7 @@ def cv_imread(filePath):
     #cv_img=cv2.cvtColor(cv_img,cv2.COLOR_RGB2BGR)
     if cv_img is None:
         return None
-    print('cv_imread', cv_img.shape)
+    #print('cv_imread', cv_img.shape)
     if len(cv_img.shape) == 2:
         cv_img = cv2.cvtColor(cv_img,cv2.COLOR_GRAY2RGB)
     if len(cv_img.shape) == 3 and cv_img.shape[2] == 4:
@@ -56,27 +59,33 @@ def testfile():
     removepath('test4')
 
     ccc = {0:0, 1:0, 2:0, 3:0}
+    ARR = []
     ci = 0
-    for img in glob.glob('test/*.jpg'):
-        print(ci,img)
+    for img in glob.glob('test/*'):
+        #print(ci,img)
         img = cv_imread(img)
         if img is None:
             continue
         img = cv2.resize(img, (224, 224), interpolation=cv2.INTER_AREA)
-        cv2.imshow('1', img)
+        #cv2.imshow('1', img)
         cv2.waitKey(1)
 
         npdata = img[:,:,::-1]
-        print(npdata.shape, npdata.mean(), npdata.max(), npdata.min())
+        #print(npdata.shape, npdata.mean(), npdata.max(), npdata.min())
         
         blob = npdata.astype(np.float32) / 255
         blob = cv2.dnn.blobFromImage(blob, 1, (224, 224), (0.5, 0.5, 0.5)) / 0.5
 
-        print(blob.shape)
+        #print(blob.shape)
         net.setInput(blob)
         preds = net.forward()
         v = np.argmax(preds)
+        if preds.max() < 0.1:
+            v = 2
+        elif preds.max() < 1:
+            v = 3
         print(ci,v,preds)
+        ARR.append(preds[0])
         ccc[v] += 1
         ci += 1
         cv2.imwrite('test'+str(v+1)+'/'+str(time.time())+'.jpg', img)
@@ -84,9 +93,10 @@ def testfile():
         img = blob[0].transpose(1,2,0)
         img = img / 2 + 0.5
         img = img[:,:,::-1]
-        cv2.imshow('2',img)
+        #cv2.imshow('2',img)
         cv2.waitKey(1)
     print(ccc)
+    np.save('ARR.npy', ARR)
 
 
 def testcap():
@@ -115,6 +125,6 @@ def testcap():
         cv2.imshow('2',img)
         cv2.waitKey(1)
 
-#testfile()
-testcap()
+testfile()
+#testcap()
 

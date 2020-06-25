@@ -8,8 +8,8 @@ import torch.onnx
 from torch.autograd import Variable
 
 
-net = models.resnet152(num_classes=4)
-net.load_state_dict(torch.load('./model/net_256.pth'))
+net = models.resnet152(num_classes=2)
+net.load_state_dict(torch.load('./model/net_140.pth'))
 net.eval()
 
 

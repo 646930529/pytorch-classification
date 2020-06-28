@@ -81,8 +81,6 @@ def testfile():
         preds = net.forward()
         v = np.argmax(preds)
         if preds.max() < 0.1:
-            v = 2
-        elif preds.max() < 1:
             v = 3
         print(ci,v,preds)
         ARR.append(preds[0])
@@ -117,6 +115,8 @@ def testcap():
         net.setInput(blob)
         preds = net.forward()
         v = np.argmax(preds)
+        if preds.max() < 0.1:
+            v = 3
         print(v,preds)
         
         img = blob[0].transpose(1,2,0)
@@ -125,6 +125,6 @@ def testcap():
         cv2.imshow('2',img)
         cv2.waitKey(1)
 
-testfile()
-#testcap()
+#testfile()
+testcap()
 

@@ -11,13 +11,13 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 #device = torch.device("cpu")
 
 
-EPOCH = 400
+EPOCH = 300
 pre_epoch = 0
 BATCH_SIZE = 32
 LR = 0.001
 
 
-net = models.resnet152(num_classes=2).to(device)
+net = models.resnet152(num_classes=3).to(device)
 #net.load_state_dict(torch.load('./model/net_256.pth'))
 
 
@@ -52,7 +52,8 @@ print(trainset[0][0].min())
 
 
 criterion = nn.CrossEntropyLoss()
-optimizer = optim.SGD(net.parameters(), lr=LR, momentum=0.9, weight_decay=1e-4)
+#optimizer = optim.SGD(net.parameters(), lr=LR, momentum=0.9, weight_decay=1e-4)
+optimizer = optim.Adam(net.parameters(), lr=LR)
 
 
 with open("log.txt", "a+")as f2:
@@ -81,10 +82,10 @@ with open("log.txt", "a+")as f2:
             _, predicted = torch.max(outputs.data, 1)
             total += labels.size(0)
             correct += predicted.eq(labels.data).cpu().sum()
-            print('[epoch:%d, iter:%d] Loss: %.03f | Acc: %.3f%% '
-                  % (epoch + 1, (i + 1 + epoch * length), sum_loss / (i + 1), 100. * correct / total))
-            f2.write('%03d  %05d |Loss: %.03f | Acc: %.3f%% '
-                  % (epoch + 1, (i + 1 + epoch * length), sum_loss / (i + 1), 100. * correct / total))
+            print('[epoch:%d, iter:%d] Loss: %.4f | Acc: %.4f '
+                  % (epoch + 1, (i + 1 + epoch * length), sum_loss / (i + 1), correct / total))
+            f2.write('%d,%d,%.4f,%.4f'
+                  % (epoch + 1, (i + 1 + epoch * length), sum_loss / (i + 1), correct / total))
             f2.write('\n')
             f2.flush()
 

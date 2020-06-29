@@ -23,10 +23,10 @@ net = models.resnet152(num_classes=3).to(device)
 
 transform_train = transforms.Compose([
     transforms.Resize([244, 244]),
-    transforms.RandomCrop(224),
     transforms.RandomHorizontalFlip(),
     transforms.RandomVerticalFlip(),
-    #transforms.RandomRotation([0, 25]),
+    transforms.RandomRotation([0, 15]),
+    transforms.RandomCrop(224),
     transforms.ColorJitter(brightness=0.15, contrast=0.15, saturation=0.15, hue=[-0.15, 0.15]),
     transforms.ToTensor(),
     transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5)),
@@ -52,8 +52,8 @@ print(trainset[0][0].min())
 
 
 criterion = nn.CrossEntropyLoss()
-#optimizer = optim.SGD(net.parameters(), lr=LR, momentum=0.9, weight_decay=1e-4)
-optimizer = optim.Adam(net.parameters(), lr=LR)
+optimizer = optim.SGD(net.parameters(), lr=LR, momentum=0.9, weight_decay=1e-4)
+#optimizer = optim.Adam(net.parameters(), lr=LR)
 
 
 with open("log.txt", "a+")as f2:
@@ -82,7 +82,7 @@ with open("log.txt", "a+")as f2:
             _, predicted = torch.max(outputs.data, 1)
             total += labels.size(0)
             correct += predicted.eq(labels.data).cpu().sum()
-            print('[epoch:%d, iter:%d] Loss: %.4f | Acc: %.4f '
+            print('[epoch:%d, iter:%d] Loss: %.03f | Acc: %.3f%% '
                   % (epoch + 1, (i + 1 + epoch * length), sum_loss / (i + 1), correct / total))
             f2.write('%d,%d,%.4f,%.4f'
                   % (epoch + 1, (i + 1 + epoch * length), sum_loss / (i + 1), correct / total))

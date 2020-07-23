@@ -103,9 +103,9 @@ def testcap():
         _, img = cap.read()
         if img is None:
             continue
-        img = img[100:324,100:324]
         cv2.imshow('1',img)
         cv2.waitKey(1)
+        img = img[150:374,150:374]
 
         npdata = img[:,:,::-1]
         

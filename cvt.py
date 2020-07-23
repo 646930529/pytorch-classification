@@ -9,7 +9,7 @@ from torch.autograd import Variable
 
 
 net = models.resnet152(num_classes=3)
-net.load_state_dict(torch.load('./model/net_250.pth'))
+net.load_state_dict(torch.load('./model/net_100.pth'))
 net.eval()
 
 

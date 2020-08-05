@@ -8,8 +8,11 @@ import torch.onnx
 from torch.autograd import Variable
 
 
-net = models.resnet152(num_classes=3)
-net.load_state_dict(torch.load('./model/net_100.pth'))
+#net = models.resnet152(num_classes=3)
+#net = models.mobilenet_v2(num_classes=3)
+net = models.resnext101_32x8d(num_classes=3)
+
+net.load_state_dict(torch.load('./model/net_100.pth', map_location={'cuda:3':'cuda:0'}))
 net.eval()
 
 

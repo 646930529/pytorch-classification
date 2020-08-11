@@ -257,7 +257,7 @@ if __name__ == '__main__':
             # as in the VGG models in torchvision.
             model = models.resnet152(num_classes=3)
             model.load_state_dict(torch.load(mod))
-            model_p.eval()
+            model.eval()
             grad_cam = GradCam(model=model, feature_module=model.layer4, target_layer_names=[str(i)], use_cuda=args.use_cuda)
             
             image_path = './examples/' + image_name + '.jpg'

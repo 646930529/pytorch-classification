@@ -11,8 +11,8 @@ import glob
 
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-net = models.mobilenet_v2(num_classes=3)
-net.load_state_dict(torch.load('./model/net_090.pth'))
+net = models.resnet50(num_classes=3)
+net.load_state_dict(torch.load('./net_099.pth'))
 net.to(device)
 net.eval()
 
@@ -23,11 +23,14 @@ transform_test = transforms.Compose([
     transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5)),
 ])
 
-
+import cv2
 with torch.no_grad():
-    file = r'D:\fire_smoke\test\ta (22).jpg'
-    img = Image.open(file)
-    imgT = transform_test(img).unsqueeze(0).to(device)
-    p = net(imgT).cpu().numpy()
-    v = np.argmax(p)
-    print(['fire','smoke','normal'][v])
+    cap = cv2.VideoCapture(0)
+    while 1:
+        _, frame = cap.read()
+        #img = Image.open(file)
+        img = Image.fromarray(cv2.cvtColor(frame,cv2.COLOR_BGR2RGB))
+        imgT = transform_test(img).unsqueeze(0).to(device)
+        p = net(imgT).cpu().numpy()
+        v = np.argmax(p)
+        print(['photo','phone','normal'][v])

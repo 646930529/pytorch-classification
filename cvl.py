@@ -61,9 +61,9 @@ def testfile():
     ccc = {0:0, 1:0, 2:0, 3:0}
     ARR = []
     ci = 0
-    for file in glob.glob('test/*'):
+    for img in glob.glob('test/*'):
         #print(ci,img)
-        img = cv_imread(file)
+        img = cv_imread(img)
         if img is None:
             continue
         img = cv2.resize(img, (224, 224), interpolation=cv2.INTER_AREA)
@@ -80,14 +80,13 @@ def testfile():
         net.setInput(blob)
         preds = net.forward()
         v = np.argmax(preds)
-        if preds.max() < 0.1:
+        if v > 3:
             v = 3
-        print(file, ci,v,preds)
+        print(ci,v)
         ARR.append(preds[0])
         ccc[v] += 1
         ci += 1
-        file = file.replace('\\','/').split('/')[-1]
-        cv2.imwrite('test'+str(v+1)+'/'+file+'_'+str(time.time())+'.jpg', img)
+        cv2.imwrite('test'+str(v+1)+'/'+str(time.time())+'.jpg', img)
         
         img = blob[0].transpose(1,2,0)
         img = img / 2 + 0.5
@@ -116,9 +115,9 @@ def testcap():
         net.setInput(blob)
         preds = net.forward()
         v = np.argmax(preds)
-        if preds.max() < 0.1:
+        if v > 3:
             v = 3
-        print(v,preds)
+        print(v)
         
         img = blob[0].transpose(1,2,0)
         img = img / 2 + 0.5

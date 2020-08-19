@@ -30,8 +30,9 @@ removepath('test4')
 
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-net = models.resnet152(num_classes=3)
-net.load_state_dict(torch.load('./model/net_100.pth'))
+#net = models.resnet152(num_classes=3)
+net = models.resnet152()
+net.load_state_dict(torch.load('./model/net_005.pth'))
 net.to(device)
 net.eval()
 
@@ -60,6 +61,8 @@ with torch.no_grad():
         imgT = transform_test(img).unsqueeze(0).to(device)
         p = net(imgT).cpu().numpy()
         v = np.argmax(p)
+        if v > 3:
+            v = 3
         print(findex, v)
 
         cv2.imwrite('test'+str(v+1)+'/'+imgname, frame)

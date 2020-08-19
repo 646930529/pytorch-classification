@@ -17,7 +17,8 @@ BATCH_SIZE = 32
 LR = 0.001
 
 
-net = models.resnet152(num_classes=3).to(device)
+#net = models.resnet152(num_classes=3).to(device)
+net = models.resnet152(pretrained=True).to(device)
 #net.load_state_dict(torch.load('./model/net_256.pth'))
 
 
